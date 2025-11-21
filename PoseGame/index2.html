@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SHAPEMAKER // HYPER_POLISH</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r132/three.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <link rel="stylesheet" href="./style2.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Nunito:wght@700;900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="screen-loading" class="game-screen loading-overlay">
+      <div class="game-logo-large entrance-anim">
+        SHAPE<br /><span class="highlight">MAKER</span>
+      </div>
+      <div class="loading-container">
+        <div class="loading-track">
+          <div class="loading-bar-fill"></div>
+        </div>
+        <div class="loading-status" id="load-text">INITIALIZING SYSTEMS...</div>
+      </div>
+    </div>
+
+    <div id="screen-menu" class="game-screen hidden">
+      <div class="lobby-container">
+        <div class="game-logo-large">
+          SHAPE<br /><span class="highlight">MAKER</span>
+        </div>
+        <div class="mode-selector">
+          <div class="mode-card" onclick="setupGame(1)">
+            <div class="card-icon">👤</div>
+            <div class="card-title">SOLO</div>
+          </div>
+          <div class="mode-card" onclick="setupGame(2)">
+            <div class="card-icon">👥</div>
+            <div class="card-title">DUO</div>
+          </div>
+          <div class="mode-card" onclick="setupGame(3)">
+            <div class="card-icon">⚔️</div>
+            <div class="card-title">TRIO</div>
+          </div>
+          <div class="mode-card" onclick="setupGame(4)">
+            <div class="card-icon">👑</div>
+            <div class="card-title">SQUAD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-turn" class="game-screen hidden">
+      <div class="operator-card">
+        <div class="op-info">
+          <div class="op-badge">NEXT UP</div>
+          <h2 id="turn-title">PLAYER 1</h2>
+          <div class="op-stats">
+            <div class="stat-row">
+              <span>STATUS</span><span class="stat-val online">ONLINE</span>
+            </div>
+            <div class="stat-row">
+              <span>MISSION</span><span class="stat-val">MATCH POSE</span>
+            </div>
+          </div>
+          <button class="btn-primary big-btn" onclick="startRound()">
+            DROP IN
+          </button>
+        </div>
+        <div class="op-visual">
+          <canvas id="turn-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-results" class="game-screen hidden">
+      <div class="victory-banner">VICTORY!</div>
+      <div class="results-card">
+        <div id="results-list"></div>
+        <div id="ai-report-box">Generating Match Report...</div>
+      </div>
+      <button class="btn-secondary" onclick="resetGame()">
+        RETURN TO LOBBY
+      </button>
+    </div>
+
+    <div id="game-ui" class="hidden">
+      <div class="hud-top">
+        <div class="hud-left-group">
+          <div class="user-badge" id="hud-player">P1</div>
+          <button id="btn-next-pose" onclick="nextPose()">⏭</button>
+        </div>
+        <div class="hud-game-title">
+          SHAPE <span class="highlight">MAKER</span>
+        </div>
+        <div class="hud-right-group">
+          <div class="hud-score-pill">
+            <span class="score-icon">⭐</span><span id="hud-score">0</span>
+          </div>
+          <div class="hud-timer-pill">
+            <span class="timer-icon">⏱</span><span id="hud-time">60</span>
+          </div>
+        </div>
+      </div>
+
+      <main class="game-viewport">
+        <div class="viewport-card target-card">
+          <div class="card-header">TARGET POSE</div>
+          <div
+            style="
+              position: relative;
+              width: 100%;
+              height: 100%;
+              background: radial-gradient(
+                circle at center,
+                #334155 0%,
+                #0f172a 100%
+              );
+            "
+          >
+            <canvas id="target-canvas"></canvas>
+            <div id="pose-name-label">T-POSE</div>
+          </div>
+        </div>
+
+        <div class="viewport-card player-card">
+          <div class="card-header">LIVE FEED</div>
+          <div class="video-wrapper">
+            <video id="webcam" autoplay playsinline muted></video>
+            <canvas id="video-overlay"></canvas>
+
+            <div id="lock-overlay">
+              <div class="lock-header">
+                <span class="lock-label">LOCKING ON...</span
+                ><span id="lock-percent">0%</span>
+              </div>
+              <div class="lock-bar-track"><div id="lock-fill"></div></div>
+            </div>
+            <div id="success-popup">PERFECT!</div>
+            <div id="warn-popup">TOO FAR!</div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="./poses2.js"></script>
+    <script src="./audio2.js"></script>
+    <script src="./script2.js"></script>
+  </body>
+</html>
